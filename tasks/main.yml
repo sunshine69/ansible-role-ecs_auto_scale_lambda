@@ -15,14 +15,14 @@
   failed_when: false
   register: s3_zip_file_result
 
-- name: upload empty zip
+- name: upload trivial zip
   aws_s3:
     region: "{{ region }}"
     profile: "{{ profile|default(omit) }}"
     bucket: "{{ s3_buckets['c-infra-build'].name }}"
     object: "{{ lambda_function_name }}.zip"
     mode: put
-    src: empty.zip
+    src: trivial.zip
   when: "'url' not in s3_zip_file_result"
 
 - name: Update ecs event monitor lambda
