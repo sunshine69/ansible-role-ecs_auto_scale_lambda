@@ -1,2 +1,2 @@
 stage: create
-lambda_function_name: ecs_event_monitor
+lambda_function_name: ecs-event-monitor
