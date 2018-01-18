@@ -15,30 +15,14 @@
   failed_when: false
   register: s3_zip_file_result
 
-- block:
-  - name: create temporary directory
-    tempfile:
-      state: directory
-    register: tempfile_result
-
-  - name: create empty zip file
-    copy:
-      content: "{{ zip_file_bytes }}"
-      dest: "{{ tempfile_result.path }}/empty.zip"
-
-  - name: upload empty zip
-    aws_s3:
-      region: "{{ region }}"
-      profile: "{{ profile|default(omit) }}"
-      bucket: "{{ s3_buckets['c-infra-build'].name }}"
-      object: "{{ lambda_function_name }}.zip"
-      mode: put
-      src: "{{ tempfile_result.path }}/empty.zip"
-
-  - name: cleanup temporary directory
-    file:
-      state: directory
-      path: "{{ tempfile_result.path }}"
+- name: upload empty zip
+  aws_s3:
+    region: "{{ region }}"
+    profile: "{{ profile|default(omit) }}"
+    bucket: "{{ s3_buckets['c-infra-build'].name }}"
+    object: "{{ lambda_function_name }}.zip"
+    mode: put
+    src: empty.zip
   when: "'url' not in s3_zip_file_result"
 
 - name: Update ecs event monitor lambda
@@ -56,11 +40,3 @@
     environment_variables:
       AUTOSCALINGGROUP: "{{ asg_name }}"
       ECS_CLUSTER: "{{ ecs_cluster }}"
-
-- name: Clean up files after they've been used
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "/tmp/{{ lambda_function_name }}.zip"
-    - "/tmp/{{ lambda_function_name }}"
