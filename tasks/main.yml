@@ -45,8 +45,8 @@
   lambda:
     region: "{{ region }}"
     profile: "{{ profile|default(omit) }}"
-    name: "{{ vpc_name }}-{{ lambda_function_name }}"
-    state: "{{ stage }}"
+    name: "{{ vpc_name }}-{{ role_type }}-{{ lambda_function_name }}"
+    state: "{{ 'present' if stage == 'create' else 'absent' }}"
     s3_bucket: "{{ s3_buckets['c-infra-build'].name }}"
     s3_key: "{{ lambda_function_name }}.zip"
     runtime: python3.6
@@ -54,8 +54,8 @@
     handler: "{{ lambda_function_name }}.lambda_handler"
     timeout: 30
     environment_variables:
-      ENVIRONMENT: "{{ env }}"
-      ALARM: "{{ ecs_event_cloudwatch_alarm }}"
+      AUTOSCALINGGROUP: "{{ asg_name }}"
+      ECS_CLUSTER: "{{ ecs_cluster }}"
 
 - name: Clean up files after they've been used
   file:
