@@ -23,7 +23,7 @@
 
   - name: create empty zip file
     copy:
-      content: "{{ zip_file_bytes | replace(' ', '') }}"
+      content: "{{ zip_file_bytes }}"
       dest: "{{ tempfile_result.path }}/empty.zip"
 
   - name: upload empty zip
