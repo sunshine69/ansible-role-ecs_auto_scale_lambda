@@ -34,7 +34,7 @@
     s3_bucket: "{{ s3_buckets['c-infra-build'].name }}"
     s3_key: "{{ lambda_function_name }}.zip"
     runtime: python3.6
-    role: "{{ vpc_name }}-ecs-event-monitor"
+    role: "ecs-event-monitor"
     handler: "{{ lambda_function_name }}.lambda_handler"
     timeout: 30
     environment_variables:
