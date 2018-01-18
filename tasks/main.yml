@@ -29,7 +29,7 @@
   lambda:
     region: "{{ region }}"
     profile: "{{ profile|default(omit) }}"
-    name: "{{ vpc_name }}-{{ role_type }}-{{ lambda_function_name }}"
+    name: "{{ ecs_cluster }}-{{ lambda_function_name }}"
     state: "{{ 'present' if stage == 'create' else 'absent' }}"
     s3_bucket: "{{ s3_buckets['c-infra-build'].name }}"
     s3_key: "{{ lambda_function_name }}.zip"
