@@ -55,6 +55,7 @@
     timeout: 30
     environment_variables:
       ENVIRONMENT: "{{ env }}"
+      ALARM: "{{ ecs_event_cloudwatch_alarm }}"
 
 - name: Clean up files after they've been used
   file:

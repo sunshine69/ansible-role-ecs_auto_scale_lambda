@@ -22,7 +22,7 @@
     iam_name: "ecs-event-monitor"
     policy_name: "ecs-event-monitor"
     state: present
-    policy_json: "{{ lookup('template', 'ecs-event-monitor-policy.json', convert_data=False) | from_json }}"
+    policy_json: "{{ lookup('file', 'ecs-event-monitor-policy.json', convert_data=False) | from_json }}"
 
 - name: Sleeping another 10 sec for the role policy to be updated.
   pause: seconds=10

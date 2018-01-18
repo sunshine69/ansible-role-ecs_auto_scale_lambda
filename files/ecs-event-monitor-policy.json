@@ -19,7 +19,7 @@
         },
         {
             "Action":[
-                "events:PutEvents"
+                "cloudwatch:putMetricAlarm"
             ],
             "Effect":"Allow",
             "Resource": "*"
