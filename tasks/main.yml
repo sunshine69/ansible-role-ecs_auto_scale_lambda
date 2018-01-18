@@ -6,7 +6,7 @@
 # (which doesn't work if the zip file doesn't exist). So we'll use
 # a dummy one
 - name: check if zip file exists
-  s3:
+  aws_s3:
     region: "{{ region }}"
     profile: "{{ profile|default(omit) }}"
     bucket: "{{ s3_buckets['c-infra-build'].name }}"
@@ -27,7 +27,7 @@
       dest: "{{ tempfile_result.path }}/empty.zip"
 
   - name: upload empty zip
-    s3:
+    aws_s3:
       region: "{{ region }}"
       profile: "{{ profile|default(omit) }}"
       bucket: "{{ s3_buckets['c-infra-build'].name }}"
