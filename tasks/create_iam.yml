@@ -1,0 +1,29 @@
+- name: Ensure an iam role for creating cloudwatch events exists
+  iam:
+    region: "{{ region }}"
+    profile: "{{ profile|default(omit) }}"
+    iam_type: role
+    name: "ecs-event-monitor"
+    trust_policy_filepath: "{{ role_path }}/files/lambda-trust-policy.json"
+    state: present
+  register: registered_iam_role
+
+# See this http://stackoverflow.com/questions/36419442/the-role-defined-for-the-function-cannot-be-assumed-by-lambda
+# Without this I hit the error The role defined for the function cannot be assumed by Lambda
+- name: Sleeping for 10 sec for the role to be available.
+  pause: seconds=10
+  when: registered_iam_role.changed
+
+- name: Assign ECS autoscaling lambda iam policy
+  iam_policy:
+    region: "{{ region }}"
+    profile: "{{ profile|default(omit) }}"
+    iam_type: role
+    iam_name: "ecs-event-monitor"
+    policy_name: "ecs-event-monitor"
+    state: present
+    policy_json: "{{ lookup('template', 'ecs-event-monitor-policy.json', convert_data=False) | from_json }}"
+
+- name: Sleeping another 10 sec for the role policy to be updated.
+  pause: seconds=10
+  when: registered_iam_role.changed

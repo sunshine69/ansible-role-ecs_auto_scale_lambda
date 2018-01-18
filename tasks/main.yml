@@ -1,0 +1,65 @@
+- include_tasks: "{{ stage }}_iam.yml"
+
+# There is a chicken egg situation between using deployment jobs
+# that create the zip file, upload and update the lambda (which
+# don't work if the lambda doesn't exist) and the lambda creation
+# (which doesn't work if the zip file doesn't exist). So we'll use
+# a dummy one
+- name: check if zip file exists
+  s3:
+    region: "{{ region }}"
+    profile: "{{ profile|default(omit) }}"
+    bucket: "{{ s3_buckets['c-infra-build'].name }}"
+    object: "{{ lambda_function_name }}.zip"
+    mode: geturl
+  failed_when: false
+  register: s3_zip_file_result
+
+- block:
+  - name: create temporary directory
+    tempfile:
+      state: directory
+    register: tempfile_result
+
+  - name: create empty zip file
+    copy:
+      content: "{{ zip_file_bytes | replace(' ', '') }}"
+      dest: "{{ tempfile_result.path }}/empty.zip"
+
+  - name: upload empty zip
+    s3:
+      region: "{{ region }}"
+      profile: "{{ profile|default(omit) }}"
+      bucket: "{{ s3_buckets['c-infra-build'].name }}"
+      object: "{{ lambda_function_name }}.zip"
+      mode: put
+      src: "{{ tempfile_result.path }}/empty.zip"
+
+  - name: cleanup temporary directory
+    file:
+      state: directory
+      path: "{{ tempfile_result.path }}"
+  when: "'url' not in s3_zip_file_result"
+
+- name: Update ecs event monitor lambda
+  lambda:
+    region: "{{ region }}"
+    profile: "{{ profile|default(omit) }}"
+    name: "{{ vpc_name }}-{{ lambda_function_name }}"
+    state: "{{ stage }}"
+    s3_bucket: "{{ s3_buckets['c-infra-build'].name }}"
+    s3_key: "{{ lambda_function_name }}.zip"
+    runtime: python3.6
+    role: "{{ vpc_name }}-ecs-event-monitor"
+    handler: "{{ lambda_function_name }}.lambda_handler"
+    timeout: 30
+    environment_variables:
+      ENVIRONMENT: "{{ env }}"
+
+- name: Clean up files after they've been used
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/tmp/{{ lambda_function_name }}.zip"
+    - "/tmp/{{ lambda_function_name }}"

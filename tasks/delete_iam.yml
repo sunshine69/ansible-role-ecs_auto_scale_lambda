@@ -1,0 +1,21 @@
+- block:
+    - name: Delete logstash lambda iam policy
+      iam_policy:
+        region: "{{ region }}"
+        profile: "{{ profile|default(omit) }}"
+        iam_type: role
+        iam_name: "xvt-{{ vpc_name }}-logstash-lambda"
+        policy_name: "xvt-{{ vpc_name }}-logstash-lambda"
+        state: "absent"
+        policy_json: "{{ lookup('template', 'iam-policy-logstash-lambda.json', convert_data=False) | from_json }}"
+
+    - name: Delete iam role for attaching to the Elasticsearch Lambda
+      iam:
+        region: "{{ region }}"
+        profile: "{{ profile|default(omit) }}"
+        iam_type: role
+        name: "xvt-{{ vpc_name }}-logstash-lambda"
+        state: "absent"
+      register: registered_iam_role
+  connection: local
+  become: no
