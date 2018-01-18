@@ -50,7 +50,8 @@
     description: "Monitor ECS events for {{ ecs_cluster }} cluster"
     targets:
       - id: "{{ ecs_event_monitor_lambda.configuration.function_name }}"
-        arn: "{{ ecs_event_monitor_lambda.configuration.function_arn }}"
+        # Strip off the version number from the arn
+        arn: "{{ (ecs_event_monitor_lambda.configuration.function_arn.split(':')[:-1])|join(':') }}"
     event_pattern: "{{ ecs_event_pattern | to_json }}"
     state: present
   register: cloudwatch_aws_event
