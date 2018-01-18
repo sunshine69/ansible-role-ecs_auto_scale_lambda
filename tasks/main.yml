@@ -40,3 +40,28 @@
     environment_variables:
       AUTOSCALINGGROUP: "{{ asg_name }}"
       ECS_CLUSTER: "{{ ecs_cluster }}"
+  register: ecs_event_monitor_lambda
+
+- name: Update the cloudwatch event to use with ECS Event monitor Lambda
+  cloudwatchevent_rule:
+    region: "{{ region }}"
+    profile: "{{ profile|default(omit) }}"
+    name: "{{ ecs_cluster }}-ecs-event-monitor-rule"
+    description: "Monitor ECS events for {{ ecs_cluster }} cluster"
+    targets:
+      - id: "{{ ecs_event_monitor_lambda.configuration.function_name }}"
+        arn: "{{ ecs_event_monitor_lambda.configuration.function_arn }}"
+    event_pattern: "{{ ecs_event_pattern | to_json }}"
+    state: present
+  register: cloudwatch_aws_event
+
+- name: create lambda policy to allow aws events to invoke it
+  lambda_policy:
+    region: "{{ region }}"
+    profile: "{{ profile|default(omit) }}"
+    state: present
+    function_name: "{{ ecs_event_monitor_lambda.configuration.function_name }}"
+    statement_id: "{{ ecs_event_monitor_lambda.configuration.function_name }}"
+    action: "lambda:InvokeFunction"
+    principal: events.amazonaws.com
+    source_arn: "{{ cloudwatch_aws_event.rule.arn }}"
