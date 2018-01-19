@@ -1,7 +1,3 @@
 stage: create
-lambda_function_name: ecs-event-monitor
-ecs_event_pattern:
-  source:
-    - aws.ecs
-      #  resources:
-      #    - "arn:aws:ecs:region:{{ aws[aws_account_name].id }}:cluster/{{ ecs_cluster }}"
+lambda_function_name: ecs-auto-scale
+ecs_auto_scale_schedule: rate(5 minutes)

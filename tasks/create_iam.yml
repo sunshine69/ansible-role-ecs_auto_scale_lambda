@@ -3,7 +3,7 @@
     region: "{{ region }}"
     profile: "{{ profile|default(omit) }}"
     iam_type: role
-    name: "ecs-event-monitor"
+    name: "ecs-auto-scale"
     trust_policy_filepath: "{{ role_path }}/files/lambda-trust-policy.json"
     state: present
   register: registered_iam_role
@@ -19,10 +19,10 @@
     region: "{{ region }}"
     profile: "{{ profile|default(omit) }}"
     iam_type: role
-    iam_name: "ecs-event-monitor"
-    policy_name: "ecs-event-monitor"
+    iam_name: "ecs-auto-scale"
+    policy_name: "ecs-auto-scale"
     state: present
-    policy_json: "{{ lookup('file', 'ecs-event-monitor-policy.json', convert_data=False) | from_json }}"
+    policy_json: "{{ lookup('file', 'ecs-auto-scale-policy.json', convert_data=False) | from_json }}"
 
 - name: Sleeping another 10 sec for the role policy to be updated.
   pause: seconds=10

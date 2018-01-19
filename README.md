@@ -1,12 +1,10 @@
-# ecs_event_monitor_lambda
+# ecs_auto_scale_lambda
 
-Creates a lamdba that monitors for ECS being
-unable to allocate a service and fires an alarm
+Creates a lamdba that updates ECS Agent desired
+count when unable to allocate a service
 
 # Variables
 
-* `ecs_event_cloudwatch_alarm` - ARN of the cloudwatch alarm
-  that should be triggered when needing to autoscale
 
 # Requirements
 

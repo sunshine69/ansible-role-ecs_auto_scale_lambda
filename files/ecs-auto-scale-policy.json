@@ -19,7 +19,9 @@
         },
         {
             "Action":[
-                "cloudwatch:putMetricAlarm"
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:SetDesiredCapacity",
+                "ecs:DescribeServices"
             ],
             "Effect":"Allow",
             "Resource": "*"
