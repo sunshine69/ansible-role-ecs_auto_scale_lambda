@@ -21,7 +21,9 @@
             "Action":[
                 "autoscaling:DescribeAutoScalingGroups",
                 "autoscaling:SetDesiredCapacity",
+                "ecs:DescribeContainerInstances",
                 "ecs:DescribeServices",
+                "ecs:ListContainerInstances",
                 "ecs:ListServices"
             ],
             "Effect":"Allow",
