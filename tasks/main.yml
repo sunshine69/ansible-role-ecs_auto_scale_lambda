@@ -22,7 +22,7 @@
     bucket: "{{ s3_buckets['c-infra-build'].name }}"
     object: "{{ lambda_function_name }}.zip"
     mode: put
-    src: trivial.zip
+    src: "{{ role_path }}/files/trivial.zip"
   when: "'url' not in s3_zip_file_result"
 
 - name: Update ecs auto scale lambda
