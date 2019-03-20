@@ -1,3 +1,5 @@
 stage: create
 lambda_function_name: ecs_auto_scale
+ecs_auto_scale_version: 'v1.23.a2a4586'
 ecs_auto_scale_schedule: rate(5 minutes)
+ecs_auto_scale_artifact_file_name: "{{ lambda_function_name }}-{{ ecs_auto_scale_version }}.zip"
