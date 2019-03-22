@@ -1,3 +1,5 @@
+Migrated to https://github.com/XVTSolutions/ansible-role-ecs_auto_scale_lambda
+
 # ecs_auto_scale_lambda
 
 Creates a lamdba that updates ECS Agent desired
