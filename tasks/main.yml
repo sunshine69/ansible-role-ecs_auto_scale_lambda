@@ -14,6 +14,11 @@
     mode: put
     src: "{{ inventory_dir }}/../{{ ecs_auto_scale_artifact_file_name }}"
 
+- name: clean up local downloaded zip file
+  file:
+    path: "{{ inventory_dir }}/../{{ ecs_auto_scale_artifact_file_name }}"
+    state: absent
+
 - name: Update ecs auto scale lambda
   lambda:
     region: "{{ region }}"
