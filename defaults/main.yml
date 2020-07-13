@@ -3,3 +3,4 @@ lambda_function_name: ecs_auto_scale
 ecs_auto_scale_version: 'v1.1.c4b593f'
 ecs_auto_scale_schedule: rate(5 minutes)
 ecs_auto_scale_artifact_file_name: "{{ lambda_function_name }}-{{ ecs_auto_scale_version }}.zip"
+ecs_auto_scale_artifact_repository_url: "https://s3-ap-southeast-2.amazonaws.com/act2-prod-infra-build/pub/{{ ecs_auto_scale_artifact_file_name }}"
